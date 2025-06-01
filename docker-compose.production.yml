@@ -1,0 +1,89 @@
+# Configuration finale pour soumission Food Knowledge Graph
+# Développé par nikoum
+
+version: '3.8'
+
+services:
+  # Service Jena Fuseki avec données pré-chargées
+  fuseki:
+    image: nikoum/food-kg-fuseki:1.0
+    container_name: food-kg-fuseki
+    ports:
+      - "3030:3030"
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx2g -Xms1g
+    volumes:
+      - fuseki_data:/fuseki
+    networks:
+      - food-kg-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3030/$/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Service Application Spring Boot  
+  food-kg-app:
+    image: nikoum/food-kg-app:1.0
+    container_name: food-kg-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - FOOD_KG_FUSEKI_URL=http://fuseki:3030
+      - FOOD_KG_DATASET_NAME=food-kg-v2
+      - FOOD_KG_LUCENE_INDEX_PATH=/app/lucene-index
+      - FOOD_KG_IMAGES_BASE_PATH=/app/data/images
+      - JAVA_OPTS=-Xmx1g -Xms512m
+    volumes:
+      - lucene_index:/app/lucene-index
+      - app_logs:/app/logs
+    depends_on:
+      fuseki:
+        condition: service_healthy
+    networks:
+      - food-kg-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Service de réindexation automatique
+  auto-reindex:
+    image: curlimages/curl:latest
+    container_name: food-kg-reindex
+    command: >
+      sh -c "
+      echo '⏳ Attente de l''application Food KG...' &&
+      sleep 90 &&
+      echo '🔄 Réindexation automatique Lucene...' &&
+      curl -X POST http://food-kg-app:8080/api/foods/reindex &&
+      echo '✅ Réindexation terminée!'
+      "
+    depends_on:
+      food-kg-app:
+        condition: service_healthy
+    networks:
+      - food-kg-network
+    restart: "no"
+
+volumes:
+  fuseki_data:
+    driver: local
+  lucene_index:
+    driver: local
+  app_logs:
+    driver: local
+
+networks:
+  food-kg-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

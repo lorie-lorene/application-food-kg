@@ -1,0 +1,69 @@
+services:
+  fuseki:
+    image: secoresearch/fuseki:latest
+    container_name: food-kg-fuseki
+    ports:
+      - "3030:3030"
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx2g -Xms1g
+      - FUSEKI_DATASET_1=food-kg-v2
+    volumes:
+      - fuseki_data:/fuseki
+      - ./data/food-kg-export.ttl:/staging/food-kg-export.ttl:ro
+    networks:
+      - food-kg-network
+
+  food-kg-app:
+    image: nikoum/food-kg-app:1.1
+    container_name: food-kg-app
+    ports:
+      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - FOOD_KG_FUSEKI_URL=http://fuseki:3030
+      - FOOD_KG_DATASET_NAME=food-kg-v2
+      - FOOD_KG_LUCENE_INDEX_PATH=/app/lucene-index
+      - FOOD_KG_IMAGES_BASE_PATH=/app/data/images
+      - JAVA_OPTS=-Xmx1g -Xms512m
+    volumes:
+      - lucene_index:/app/lucene-index
+      - ./logs:/app/logs
+    depends_on:
+      - fuseki
+    networks:
+      - food-kg-network
+
+  data-init:
+    image: curlimages/curl:latest
+    container_name: food-kg-data-init
+    volumes:
+      - ./data:/staging:ro
+    command: >
+      sh -c "
+      echo '🚀 Initialisation Food KG...' &&
+      sleep 20 &&
+      until curl -s http://fuseki:3030/\$$/ping > /dev/null 2>&1; do sleep 3; done &&
+      echo '📊 Création dataset...' &&
+      curl -X POST http://fuseki:3030/\$$/datasets -H 'Content-Type: application/x-www-form-urlencoded' -d 'dbName=food-kg-v2&dbType=tdb2' &&
+      echo '📂 Chargement données...' &&
+      curl -X POST http://fuseki:3030/food-kg-v2/data -H 'Content-Type: text/turtle' --data-binary @/staging/food-kg-export.ttl &&
+      sleep 30 &&
+      until curl -s http://food-kg-app:8080/actuator/health > /dev/null 2>&1; do sleep 5; done &&
+      curl -X POST http://food-kg-app:8080/api/foods/reindex &&
+      echo '🎉 Terminé!'
+      "
+    depends_on:
+      - fuseki
+      - food-kg-app
+    networks:
+      - food-kg-network
+    restart: "no"
+
+volumes:
+  fuseki_data:
+  lucene_index:
+
+networks:
+  food-kg-network:
+    driver: bridge
