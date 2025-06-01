@@ -1,0 +1,172 @@
+RÉSUMÉ DES CATÉGORIES D'ALIMENTS TRAITÉES
+==================================================
+
+Nombre total de catégories: 23
+Nombre total d'images: 2256
+
+DOUBLONS DÉTECTÉS ET IGNORÉS:
+- coffee without milk and  with sugar
+- dry peant ,roasted and salted 
+
+CATÉGORIES TRAITÉES:
+
+DRY_RICE_AND_POLISHED_RICE_FOOD
+  - Images: 79
+  - Classe OWL: RawFood
+  - Type: cereale
+  - Ingrédient principal: rice
+  - Dossier original: dry_rice_and_polished_rice_food
+
+CUP_OF_TEA
+  - Images: 94
+  - Classe OWL: Tea
+  - Type: boisson_chaude
+  - Ingrédient principal: tea
+  - Dossier original: cup_of_tea
+
+CABBAGE_BROTH
+  - Images: 185
+  - Classe OWL: CookedFood
+  - Type: bouillon
+  - Ingrédient principal: cabbage
+  - Dossier original: cabbage broth 
+
+HALWA
+  - Images: 107
+  - Classe OWL: CookedFood
+  - Type: dessert
+  - Ingrédient principal: mixed
+  - Dossier original: halwa
+
+GROUNDNUT
+  - Images: 86
+  - Classe OWL: RawFood
+  - Type: legumineuse
+  - Ingrédient principal: peanut
+  - Dossier original: groundnut
+
+BEEF_BROTH_WITH_OIL
+  - Images: 83
+  - Classe OWL: CookedFood
+  - Type: bouillon
+  - Ingrédient principal: beef
+  - Dossier original: beef broth with oil
+
+DRIED_SESAME_AND_SEED_FOOD
+  - Images: 106
+  - Classe OWL: RawFood
+  - Type: graine
+  - Ingrédient principal: sesame
+  - Dossier original: dried_sesame_and_seed_food
+
+DRIED_OCTOPUS_FOOD
+  - Images: 108
+  - Classe OWL: ManufacturedFood
+  - Type: fruit_de_mer_sec
+  - Ingrédient principal: octopus
+  - Dossier original: dried octopus food 
+
+DRIED_HAZELNUT
+  - Images: 56
+  - Classe OWL: RawFood
+  - Type: noix
+  - Ingrédient principal: hazelnut
+  - Dossier original: dried hazelnut 
+
+DATE_FRUITS
+  - Images: 65
+  - Classe OWL: Fruit
+  - Type: fruit_sec
+  - Ingrédient principal: dates
+  - Dossier original: date_fruits_
+
+SWEET_TEA
+  - Images: 101
+  - Classe OWL: Tea
+  - Type: boisson_chaude
+  - Ingrédient principal: tea
+  - Dossier original: sweet_tea
+
+TEA_WITHOUT_SUGAR_AND_WITH_MILK
+  - Images: 90
+  - Classe OWL: Tea
+  - Type: boisson_chaude
+  - Ingrédient principal: tea
+  - Dossier original: tea without sugar and with milk
+
+COFFEE_WITH_MILK_WITHOUT_SUGAR
+  - Images: 115
+  - Classe OWL: Coffee
+  - Type: boisson_chaude
+  - Ingrédient principal: coffee
+  - Dossier original: coffee with milk without sugar
+
+CUTTLEFISH_RAW
+  - Images: 101
+  - Classe OWL: RawFood
+  - Type: fruit_de_mer
+  - Ingrédient principal: cuttlefish
+  - Dossier original: cuttlefish, raw 
+
+DRY_PEANT_UNSALTED
+  - Images: 100
+  - Classe OWL: CookedFood
+  - Type: legumineuse_preparee
+  - Ingrédient principal: peanut
+  - Dossier original: dry peant  unsalted
+
+BEEF_BROTH_WITHOUT_OIL
+  - Images: 92
+  - Classe OWL: CookedFood
+  - Type: bouillon
+  - Ingrédient principal: beef
+  - Dossier original: beef broth without oil
+
+GROUNDNUT_CLUSTERL
+  - Images: 58
+  - Classe OWL: RawFood
+  - Type: legumineuse
+  - Ingrédient principal: peanut
+  - Dossier original: groundnut clusterl
+
+DRY_ROASTED_MIXED_NUTS_FOOD
+  - Images: 98
+  - Classe OWL: CookedFood
+  - Type: noix_grillees
+  - Ingrédient principal: mixed_nuts
+  - Dossier original: dry roasted mixed nuts food 
+
+DRIED_WALNUTS_FOOD
+  - Images: 124
+  - Classe OWL: RawFood
+  - Type: noix
+  - Ingrédient principal: walnuts
+  - Dossier original: dried walnuts food
+
+DRY_PEANT_ROASTED_AND_SALTED
+  - Images: 65
+  - Classe OWL: CookedFood
+  - Type: legumineuse_preparee
+  - Ingrédient principal: peanut
+  - Dossier original: dry_peant_,roasted_and_salted
+
+TOMATO-KETCHUP
+  - Images: 134
+  - Classe OWL: NaturalBeverage
+  - Type: jus
+  - Ingrédient principal: tomato
+  - Dossier original: Tomato-ketchup
+
+COFFEE_WITH_MILK_AND_WITH_SUGAR
+  - Images: 106
+  - Classe OWL: Coffee
+  - Type: boisson_chaude
+  - Ingrédient principal: coffee
+  - Dossier original: coffee with milk and  with sugar
+
+TOMATO_JUICE
+  - Images: 103
+  - Classe OWL: NaturalBeverage
+  - Type: jus
+  - Ingrédient principal: tomato
+  - Dossier original: tomato juice

@@ -1,0 +1,80 @@
+FROM stain/jena-fuseki:latest
+
+# Passer en root pour fixer les permissions
+USER root
+
+# Créer et configurer le répertoire databases avec les bonnes permissions
+RUN mkdir -p /fuseki/databases && \
+    chown -R 9008:9008 /fuseki/databases && \
+    chmod -R 775 /fuseki/databases
+
+# Copier les données TTL directement
+COPY ./data/food-kg-export.ttl /staging/
+
+# Retourner à l'utilisateur fuseki
+USER 9008
+
+# Utiliser l'entrypoint origin
+# Utiliser l'entrypoint original - pas de modification
+
+# FROM stain/jena-fuseki:latest
+
+# # Passer en root pour les permissions
+# USER root
+
+# # Créer le répertoire et définir les permissions
+# RUN mkdir -p /fuseki/databases && \
+#     chmod 777 /fuseki/databases && \
+#     chown -R 9008:9008 /fuseki
+
+# # Copier les données TTL
+# COPY ./data/food-kg-export.ttl /staging/food-kg-export.ttl
+
+# # Script d'initialisation ONE-SHOT
+# RUN echo '#!/bin/sh' > /init-data.sh && \
+#     echo 'set -e' >> /init-data.sh && \
+#     echo 'echo "🚀 Import des données au premier démarrage..."' >> /init-data.sh && \
+#     echo 'if [ ! -f /fuseki/databases/.data-loaded ]; then' >> /init-data.sh && \
+#     echo '  echo "⏳ Attente de Fuseki..."' >> /init-data.sh && \
+#     echo '  for i in $(seq 1 30); do' >> /init-data.sh && \
+#     echo '    if wget -q -O - http://localhost:3030/$/ping > /dev/null 2>&1; then' >> /init-data.sh && \
+#     echo '      echo "✅ Fuseki prêt!"' >> /init-data.sh && \
+#     echo '      break' >> /init-data.sh && \
+#     echo '    fi' >> /init-data.sh && \
+#     echo '    echo "Tentative $i/30..."' >> /init-data.sh && \
+#     echo '    sleep 3' >> /init-data.sh && \
+#     echo '  done' >> /init-data.sh && \
+#     echo '  echo "📁 Création du dataset..."' >> /init-data.sh && \
+#     echo '  wget -q -O - --post-data="dbName=food-kg-v2&dbType=tdb2" \' >> /init-data.sh && \
+#     echo '    --header="Content-Type: application/x-www-form-urlencoded" \' >> /init-data.sh && \
+#     echo '    "http://localhost:3030/$/datasets" || true' >> /init-data.sh && \
+#     echo '  echo "📥 Import des données..."' >> /init-data.sh && \
+#     echo '  wget -q -O - --post-file="/staging/food-kg-export.ttl" \' >> /init-data.sh && \
+#     echo '    --header="Content-Type: text/turtle" \' >> /init-data.sh && \
+#     echo '    "http://localhost:3030/food-kg-v2/data"' >> /init-data.sh && \
+#     echo '  touch /fuseki/databases/.data-loaded' >> /init-data.sh && \
+#     echo '  echo "🎉 Import terminé!"' >> /init-data.sh && \
+#     echo 'else' >> /init-data.sh && \
+#     echo '  echo "ℹ️ Données déjà chargées"' >> /init-data.sh && \
+#     echo 'fi' >> /init-data.sh
+
+# # Rendre le script exécutable
+# RUN chmod +x /init-data.sh
+
+# # Script de démarrage combiné
+# RUN echo '#!/bin/sh' > /start-fuseki.sh && \
+#     echo 'set -e' >> /start-fuseki.sh && \
+#     echo 'echo "🚀 Démarrage de Fuseki..."' >> /start-fuseki.sh && \
+#     echo '/docker-entrypoint.sh &' >> /start-fuseki.sh && \
+#     echo 'FUSEKI_PID=$!' >> /start-fuseki.sh && \
+#     echo 'sleep 10' >> /start-fuseki.sh && \
+#     echo '/init-data.sh &' >> /start-fuseki.sh && \
+#     echo 'wait $FUSEKI_PID' >> /start-fuseki.sh
+
+# RUN chmod +x /start-fuseki.sh
+
+# # Repasser à l'utilisateur fuseki
+# USER 9008
+
+# # Utiliser le script de démarrage
+# ENTRYPOINT ["/start-fuseki.sh"]

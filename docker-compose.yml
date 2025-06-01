@@ -1,0 +1,71 @@
+
+services:
+  # Service Jena Fuseki
+  fuseki:
+    image: secoresearch/fuseki:latest
+    container_name: food-kg-fuseki
+    ports:
+      - "3030:3030"
+    environment:
+      - ADMIN_PASSWORD=admin
+      - JVM_ARGS=-Xmx2g -Xms1g
+      - FUSEKI_DATASET_1=food-kg-v2
+    volumes:
+      - fuseki_data:/fuseki
+      - ./data/food-kg-export.ttl:/staging/food-kg-export.ttl:ro
+    networks:
+      - food-kg-network
+    restart: unless-stopped
+
+  test-jena-app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: test-jena-app
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - FOOD_KG_FUSEKI_URL=http://fuseki:3030
+      - FOOD_KG_DATASET_NAME=food-kg-v2
+      - FOOD_KG_LUCENE_INDEX_PATH=/app/lucene-index
+      - FOOD_KG_IMAGES_BASE_PATH=/app/data/images
+      - JAVA_OPTS=-Xmx1g -Xms512m -Djava.security.egd=file:/dev/./urandom -Djava.net.preferIPv4Stack=true
+      - TZ=UTC
+    volumes:
+      - ./data/images:/app/data/images:ro
+      - lucene_index:/app/lucene-index
+      - ./logs:/app/logs
+    depends_on:
+      - fuseki
+    networks:
+      - food-kg-network
+    restart: unless-stopped
+    stop_grace_period: 30s
+
+  # Service optionnel pour les logs (si vous voulez un dashboard)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: food-kg-nginx
+  #   ports:
+  #     - "80:80"
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - test-jena-app
+  #   networks:
+  #     - food-kg-network
+  #   restart: unless-stopped
+
+volumes:
+  fuseki_data:
+    driver: local
+  lucene_index:
+    driver: local
+
+networks:
+  food-kg-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
