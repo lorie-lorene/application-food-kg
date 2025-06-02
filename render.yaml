@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: mobile-health-api
+    env: java
+    plan: free
+    buildCommand: "./mvnw clean package -DskipTests"
+    startCommand: "java -jar target/*.jar"
+    healthCheckPath: "/api/health"
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: 8080
+      - key: JAVA_TOOL_OPTIONS
+        value: "-Xmx300m"
+      - key: JENA_FUSEKI_URL
+        value: "http://localhost:3030"
+      - key: JENA_DATASET
+        value: "food-kg-v2"
